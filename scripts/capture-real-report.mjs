@@ -8,7 +8,11 @@ const artifactsDirectory = path.join(process.cwd(), "artifacts");
 await mkdir(artifactsDirectory, { recursive: true });
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1500, height: 1050 } });
+const context = await browser.newContext({
+  permissions: ["clipboard-read", "clipboard-write"],
+  viewport: { width: 1500, height: 1050 },
+});
+const page = await context.newPage();
 const browserErrors = [];
 page.on("console", (message) => {
   if (message.type() === "error") browserErrors.push(message.text());
@@ -50,6 +54,124 @@ await comparisonSection.screenshot({
     "citation-clean-comparison-report.png",
   ),
 });
+
+await page.getByRole("button", { name: "Custom export" }).click();
+const customExportDialog = page.getByRole("dialog", {
+  name: "Custom template",
+});
+await customExportDialog.waitFor();
+await customExportDialog.evaluate(async (element) => {
+  await Promise.all(
+    element.getAnimations().map((animation) => animation.finished),
+  );
+});
+const customDialogLayout = await customExportDialog.evaluate((element) => {
+  const bounds = element.getBoundingClientRect();
+  return {
+    width: bounds.width,
+    left: bounds.left,
+    right: bounds.right,
+    viewportWidth: window.innerWidth,
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  };
+});
+if (
+  customDialogLayout.viewportWidth >= 1200 &&
+  (customDialogLayout.width < 900 ||
+    customDialogLayout.left < 0 ||
+    customDialogLayout.right > customDialogLayout.viewportWidth ||
+    customDialogLayout.scrollWidth > customDialogLayout.clientWidth)
+) {
+  throw new Error(
+    `Custom export layout verification failed: ${JSON.stringify(customDialogLayout)}`,
+  );
+}
+const openedReportTitle = await page
+  .locator("main article header h1")
+  .first()
+  .innerText();
+const customTemplate = `# {{ title }}
+
+> {{ question }}
+
+**Provider:** {{ provider }} / {{ agent }}
+**Evidence:** {{ citationCount }} citations
+**Duration:** {{ duration }}
+**Completed:** {{ completionDate }}`;
+await customExportDialog.getByLabel("Export template").fill(customTemplate);
+const customPreviewElement = customExportDialog.locator("pre");
+await customPreviewElement.waitFor();
+const customPreview = await customPreviewElement.textContent();
+if (
+  !customPreview ||
+  !customPreview.includes(openedReportTitle) ||
+  !customPreview.includes("Deep Research") ||
+  !customPreview.includes("deep-research-preview-04-2026") ||
+  !customPreview.includes("citations")
+) {
+  throw new Error("Custom export preview verification failed.");
+}
+await page.screenshot({
+  path: path.join(artifactsDirectory, "real-custom-export.png"),
+  fullPage: false,
+});
+
+await customExportDialog.getByRole("button", { name: "Copy export" }).click();
+await customExportDialog.getByText("Copied to clipboard").waitFor();
+const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+if (clipboardText !== customPreview) {
+  throw new Error("Custom export copy verification failed.");
+}
+
+const customDownloadPromise = page.waitForEvent("download");
+await customExportDialog.getByRole("button", { name: "Download .md" }).click();
+const customDownload = await customDownloadPromise;
+const customDownloadPath = path.join(
+  artifactsDirectory,
+  "verified-custom-report.md",
+);
+await customDownload.saveAs(customDownloadPath);
+if ((await readFile(customDownloadPath, "utf8")) !== customPreview) {
+  throw new Error("Custom export download verification failed.");
+}
+await page.setViewportSize({ width: 390, height: 844 });
+const mobileDialogLayout = await customExportDialog.evaluate((element) => {
+  const bounds = element.getBoundingClientRect();
+  return {
+    left: bounds.left,
+    right: bounds.right,
+    viewportWidth: window.innerWidth,
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  };
+});
+if (
+  mobileDialogLayout.left < 0 ||
+  mobileDialogLayout.right > mobileDialogLayout.viewportWidth ||
+  mobileDialogLayout.scrollWidth > mobileDialogLayout.clientWidth
+) {
+  throw new Error("Custom export mobile layout verification failed.");
+}
+await page.screenshot({
+  path: path.join(artifactsDirectory, "real-custom-export-mobile.png"),
+  fullPage: false,
+});
+await page.setViewportSize({ width: 1500, height: 1050 });
+await customExportDialog
+  .getByRole("button", { name: "Close custom export" })
+  .click();
+await page.getByRole("button", { name: "Custom export" }).click();
+await customExportDialog.waitFor();
+if (
+  (await customExportDialog.getByLabel("Export template").inputValue()) !==
+  customTemplate
+) {
+  throw new Error("Custom export persistence verification failed.");
+}
+await customExportDialog
+  .getByRole("button", { name: "Close custom export" })
+  .click();
 
 const markdownDownloadPromise = page.waitForEvent("download");
 await page.getByRole("button", { name: "Markdown" }).click();
@@ -121,4 +243,5 @@ console.log(
   }),
 );
 
+await context.close();
 await browser.close();

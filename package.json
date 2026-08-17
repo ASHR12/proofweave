@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --import tsx --test src/lib/report-parser.test.ts src/lib/citation-presentation.test.ts src/lib/run-store.test.ts src/lib/research-manager-core.test.ts",
+    "test": "node --import tsx --test src/lib/report-parser.test.ts src/lib/citation-presentation.test.ts src/lib/report-template.test.ts src/lib/run-store.test.ts src/lib/research-manager-core.test.ts",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "capture:screenshots": "node scripts/capture-screenshots.mjs",

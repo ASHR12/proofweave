@@ -34,6 +34,18 @@ npm run build
 These commands do not contact Google. A paid Deep Research call occurs only
 after explicit confirmation in the New Research screen.
 
+## Custom report exports
+
+Open a saved report and choose **Custom export** to shape a reusable text or
+Markdown template. The editor previews the current report as you type, keeps
+the latest template in the browser, and can copy the rendered text or download
+it as a Markdown file.
+
+Template expressions use double braces. Available values include `title`,
+`question`, `provider`, `agent`, `citationCount`, `duration`,
+`completionDate`, and `reportMarkdown`. The complete report is included in the
+default template.
+
 ## Architecture
 
 `src/providers/google-research.ts` is the sole provider boundary. It starts

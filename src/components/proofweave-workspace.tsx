@@ -10,6 +10,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { CustomReportExport } from "@/components/custom-report-export";
 import { Icon, WeaveMark } from "@/components/icons";
 import { useResearchRun } from "@/hooks/use-research-run";
 import { useReports } from "@/hooks/use-reports";
@@ -523,6 +524,10 @@ function ReportReader({
             Evidence
             <span className={styles.countBadge}>{report.citations.length}</span>
           </button>
+          <CustomReportExport
+            report={report}
+            triggerClassName={styles.secondaryButton}
+          />
           <button
             className={styles.secondaryButton}
             onClick={() => downloadMarkdown(report)}
