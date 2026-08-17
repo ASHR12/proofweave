@@ -1,0 +1,70 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local artifacts, exports, audits, and scratch files
+/artifacts/
+/downloads/
+/exports/
+/audit/
+/audits/
+/tmp/
+/temp/
+/playwright-report/
+/test-results/
+*.tmp
+*.temp
+*.bak
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+gitleaks-report.*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# local report records
+/data/reports/*
+!/data/reports/.gitkeep
+!/data/reports/sample-glm-5-3-vs-kimi-k3.json
+
+# local active run records
+/data/runs/*
+!/data/runs/.gitkeep
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

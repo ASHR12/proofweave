@@ -1,0 +1,33 @@
+{
+  "name": "proofweave",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --import tsx --test src/lib/report-parser.test.ts src/lib/citation-presentation.test.ts src/lib/run-store.test.ts src/lib/research-manager-core.test.ts",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "capture:screenshots": "node scripts/capture-screenshots.mjs",
+    "capture:real": "node scripts/capture-real-report.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "^2.17.1",
+    "next": "16.3.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.1",
+    "playwright": "^1.62.1",
+    "tsx": "^4.23.12",
+    "typescript": "^5"
+  }
+}
