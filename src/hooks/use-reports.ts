@@ -88,7 +88,7 @@ export function useReports() {
       updatedAt: timestamp,
       run: {
         ...source.run,
-        id: `local-preview-${Math.random().toString(36).slice(2, 10)}`,
+        id: `local-preview-${crypto.randomUUID()}`,
       },
     };
 

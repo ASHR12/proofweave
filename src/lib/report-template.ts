@@ -10,7 +10,7 @@ export const DEFAULT_REPORT_TEMPLATE = `{{ reportMarkdown }}
 
 ---
 
-_Completed {{ completionDate }} with {{ provider }} ({{ agent }}) in {{ duration }} · {{ citationCount === 1 ? "1 citation" : citationCount + " citations" }}_`;
+_Completed {{ completionDate }} with {{ provider }} ({{ agent }}) in {{ duration }} · {{ citationLabel }}_`;
 
 export const REPORT_TEMPLATE_FIELDS = [
   {
@@ -32,6 +32,10 @@ export const REPORT_TEMPLATE_FIELDS = [
   {
     name: "citationCount",
     description: "Number of cited sources",
+  },
+  {
+    name: "citationLabel",
+    description: "Citation count with singular or plural label",
   },
   {
     name: "duration",
@@ -58,10 +62,14 @@ type ReportTemplateValues = {
   provider: string;
   agent: string;
   citationCount: number;
+  citationLabel: string;
   duration: string;
   completionDate: string;
   reportMarkdown: string;
 };
+
+const LEGACY_CITATION_LABEL_EXPRESSION =
+  /^citationCount\s*===\s*1\s*\?\s*(?:"1 citation"|'1 citation')\s*:\s*citationCount\s*\+\s*(?:" citations"|' citations')$/;
 
 function formatDuration(durationSeconds?: number) {
   if (durationSeconds === undefined) return "No live run";
@@ -82,12 +90,16 @@ function formatCompletionDate(report: ResearchReport) {
 export function getReportTemplateValues(
   report: ResearchReport,
 ): ReportTemplateValues {
+  const citationCount = report.citations.length;
+
   return {
     title: report.title,
     question: report.question,
     provider: report.provider.label,
     agent: report.provider.agent,
-    citationCount: report.citations.length,
+    citationCount,
+    citationLabel:
+      citationCount === 1 ? "1 citation" : `${citationCount} citations`,
     duration: formatDuration(report.durationSeconds),
     completionDate: formatCompletionDate(report),
     reportMarkdown: reportToMarkdown(report),
@@ -99,23 +111,22 @@ function evaluateTemplateExpression(
   values: ReportTemplateValues,
   position: number,
 ) {
-  if (!expression.trim()) {
+  const fieldName = expression.trim();
+  if (!fieldName) {
     throw new Error(`Expression ${position} is empty.`);
   }
 
-  try {
-    const names = Object.keys(values);
-    const evaluator = Function(
-      ...names,
-      `"use strict"; return (${expression});`,
-    ) as (...args: unknown[]) => unknown;
-    const value = evaluator(...Object.values(values));
-    return value === null || value === undefined ? "" : String(value);
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "The expression could not run.";
-    throw new Error(`Expression ${position}: ${message}`);
+  if (Object.prototype.hasOwnProperty.call(values, fieldName)) {
+    return String(values[fieldName as keyof ReportTemplateValues]);
   }
+
+  if (LEGACY_CITATION_LABEL_EXPRESSION.test(fieldName)) {
+    return values.citationLabel;
+  }
+
+  throw new Error(
+    `Expression ${position}: use one of the available report values.`,
+  );
 }
 
 export function renderReportTemplate(

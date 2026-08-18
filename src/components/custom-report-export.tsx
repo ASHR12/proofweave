@@ -217,13 +217,9 @@ export function CustomReportExport({
                   value={template}
                 />
                 <p className={styles.guidance} id="template-guidance">
-                  Wrap report values or expressions in double braces, such as{" "}
+                  Wrap report values in double braces, such as{" "}
                   <code>{"{{ title }}"}</code> or{" "}
-                  <code>
-                    {
-                      '{{ citationCount === 1 ? "1 citation" : citationCount + " citations" }}'
-                    }
-                  </code>
+                  <code>{"{{ citationLabel }}"}</code>
                   .
                 </p>
                 {preview.error && (

@@ -53,7 +53,7 @@ const report: ResearchReport = {
   ],
 };
 
-test("renders report values and expressions into a custom export", () => {
+test("renders report values and the legacy citation expression", () => {
   const template = `# {{ title }}
 
 > {{ question }}
@@ -79,10 +79,23 @@ test("builds the default preview with the complete report Markdown", () => {
   const result = renderReportTemplate(DEFAULT_REPORT_TEMPLATE, report);
 
   assert.equal(result.error, null);
+  assert.equal(values.citationLabel, "1 citation");
   assert.match(values.reportMarkdown, /## Evidence/);
   assert.ok(result.output.startsWith(values.reportMarkdown));
   assert.match(result.output, /Deep Research/);
   assert.match(result.output, /1 citation/);
+});
+
+test("rejects executable template expressions without evaluating them", () => {
+  const result = renderReportTemplate(
+    '{{ (() => { throw new Error("executed") })() }}',
+    report,
+  );
+
+  assert.deepEqual(result, {
+    output: "",
+    error: "Expression 1: use one of the available report values.",
+  });
 });
 
 test("returns validation messages for incomplete templates", () => {

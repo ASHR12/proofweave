@@ -41,10 +41,10 @@ Markdown template. The editor previews the current report as you type, keeps
 the latest template in the browser, and can copy the rendered text or download
 it as a Markdown file.
 
-Template expressions use double braces. Available values include `title`,
-`question`, `provider`, `agent`, `citationCount`, `duration`,
-`completionDate`, and `reportMarkdown`. The complete report is included in the
-default template.
+Template values use double braces. Available values include `title`,
+`question`, `provider`, `agent`, `citationCount`, `citationLabel`, `duration`,
+`completionDate`, and `reportMarkdown`. The complete report is included in
+the default template.
 
 ## Architecture
 
