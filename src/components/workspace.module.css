@@ -1809,6 +1809,28 @@
   letter-spacing: -0.025em;
 }
 
+.evidenceTools {
+  display: flex;
+  padding: 14px 28px;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.evidenceTools .searchField {
+  width: auto;
+  flex: 1;
+  min-height: 38px;
+}
+
+.evidenceCount {
+  flex-shrink: 0;
+  color: var(--ink-faint);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .evidenceList {
   flex: 1;
   padding: 6px 28px 28px;

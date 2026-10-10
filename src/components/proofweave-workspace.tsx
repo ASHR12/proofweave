@@ -14,6 +14,7 @@ import { CustomReportExport } from "@/components/custom-report-export";
 import { Icon, WeaveMark } from "@/components/icons";
 import { useResearchRun } from "@/hooks/use-research-run";
 import { useReports } from "@/hooks/use-reports";
+import { filterCitations } from "@/lib/citation-filter";
 import { stripProviderCitationTokens } from "@/lib/citation-presentation";
 import {
   downloadMarkdown,
@@ -986,6 +987,19 @@ function EvidenceDrawer({
 }: EvidenceDrawerProps) {
   const drawerRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [citationQuery, setCitationQuery] = useState("");
+  const [wasOpen, setWasOpen] = useState(isOpen);
+
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
+    if (!isOpen) setCitationQuery("");
+  }
+
+  const citations = report?.citations ?? [];
+  const filteredCitations = useMemo(
+    () => filterCitations(report?.citations ?? [], citationQuery),
+    [report, citationQuery],
+  );
 
   useEffect(() => {
     if (!isOpen) return;
@@ -1067,14 +1081,35 @@ function EvidenceDrawer({
           </button>
         </header>
 
+        <div className={styles.evidenceTools}>
+          <label className={styles.searchField}>
+            <span className={styles.srOnly}>Search sources</span>
+            <Icon name="search" />
+            <input
+              onChange={(event) => setCitationQuery(event.target.value)}
+              placeholder="Search title, publisher, or excerpt"
+              type="search"
+              value={citationQuery}
+            />
+          </label>
+          <span aria-live="polite" className={styles.evidenceCount}>
+            {filteredCitations.length} of {citations.length} sources
+          </span>
+        </div>
+
         <div className={styles.evidenceList}>
-          {report.citations.length === 0 && (
+          {citations.length === 0 && (
             <p className={styles.emptyEvidence}>
               The provider returned no usable URL citation annotations. The
               report text is preserved without invented evidence.
             </p>
           )}
-          {report.citations.map((citation) => (
+          {citations.length > 0 && filteredCitations.length === 0 && (
+            <p className={styles.emptyEvidence}>
+              No sources match your search.
+            </p>
+          )}
+          {filteredCitations.map((citation) => (
             <article
               className={styles.evidenceCard}
               data-selected={selectedCitationId === citation.id}
