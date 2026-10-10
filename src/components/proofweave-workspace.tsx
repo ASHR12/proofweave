@@ -14,7 +14,10 @@ import { CustomReportExport } from "@/components/custom-report-export";
 import { Icon, WeaveMark } from "@/components/icons";
 import { useResearchRun } from "@/hooks/use-research-run";
 import { useReports } from "@/hooks/use-reports";
-import { filterCitations } from "@/lib/citation-filter";
+import {
+  NO_SOURCES_MATCH_MESSAGE,
+  filterCitations,
+} from "@/lib/citation-filter";
 import { stripProviderCitationTokens } from "@/lib/citation-presentation";
 import {
   downloadMarkdown,
@@ -1106,7 +1109,7 @@ function EvidenceDrawer({
           )}
           {citations.length > 0 && filteredCitations.length === 0 && (
             <p className={styles.emptyEvidence}>
-              No sources match your search.
+              {NO_SOURCES_MATCH_MESSAGE}
             </p>
           )}
           {filteredCitations.map((citation) => (

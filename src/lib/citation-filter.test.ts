@@ -3,7 +3,10 @@ import test from "node:test";
 
 import type { Citation } from "@/types/report";
 
-import { filterCitations } from "./citation-filter";
+import {
+  NO_SOURCES_MATCH_MESSAGE,
+  filterCitations,
+} from "./citation-filter";
 
 function makeCitation(overrides: Partial<Citation> & { id: string }): Citation {
   return {
@@ -73,4 +76,12 @@ test("supports a live count of filtered results against the total", () => {
     `${filterCitations(CITATIONS, "zzz").length} of ${CITATIONS.length} sources`,
     "0 of 3 sources",
   );
+});
+
+test("signals the \"No sources match\" empty state when nothing matches", () => {
+  const filtered = filterCitations(CITATIONS, "no such source");
+
+  assert.equal(filtered.length, 0);
+  assert.equal(CITATIONS.length > 0 && filtered.length === 0, true);
+  assert.equal(NO_SOURCES_MATCH_MESSAGE, "No sources match your search.");
 });

@@ -1,5 +1,7 @@
 import type { Citation } from "@/types/report";
 
+export const NO_SOURCES_MATCH_MESSAGE = "No sources match your search.";
+
 /**
  * Filters citations by a case-insensitive query matched against the
  * title, publisher, and excerpt shown for each source in the drawer.
