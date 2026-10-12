@@ -12,6 +12,7 @@ import remarkGfm from "remark-gfm";
 
 import { CustomReportExport } from "@/components/custom-report-export";
 import { Icon, WeaveMark } from "@/components/icons";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useResearchRun } from "@/hooks/use-research-run";
 import { useReports } from "@/hooks/use-reports";
 import { stripProviderCitationTokens } from "@/lib/citation-presentation";
@@ -1329,6 +1330,7 @@ export default function ProofweaveWorkspace() {
           <div className={styles.localStatus}>
             <span />
             Server connected
+            <ThemeToggle />
           </div>
         </header>
 
