@@ -17,30 +17,27 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  
+  const stored = localStorage.getItem("proofweave-theme") as Theme | null;
+  
+  if (stored && (stored === "light" || stored === "dark")) {
+    return stored;
+  }
+  
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return prefersDark ? "dark" : "light";
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem("proofweave-theme") as Theme | null;
-    
-    if (stored && (stored === "light" || stored === "dark")) {
-      setTheme(stored);
-      document.documentElement.setAttribute("data-theme", stored);
-    } else {
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)",
-      ).matches;
-      const systemTheme = prefersDark ? "dark" : "light";
-      setTheme(systemTheme);
-      document.documentElement.setAttribute("data-theme", systemTheme);
-    }
-  }, []);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
-    if (!mounted) return;
-
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     
     function handleChange(event: MediaQueryListEvent) {
@@ -48,19 +45,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       if (!stored) {
         const newTheme = event.matches ? "dark" : "light";
         setTheme(newTheme);
-        document.documentElement.setAttribute("data-theme", newTheme);
       }
     }
 
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [mounted]);
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("proofweave-theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
   };
 
   return (

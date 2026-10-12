@@ -1,5 +1,4 @@
 import { chromium } from "playwright";
-import { writeFileSync } from "fs";
 
 async function captureScreenshots() {
   const browser = await chromium.launch({ headless: true });
