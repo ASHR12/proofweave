@@ -86,13 +86,19 @@ stable sample ID. The original private runtime record remains outside version
 control. A fresh clone loads the sanitized sample automatically; future runtime
 reports remain ignored.
 
-## Local API
+## Local & Workspace API
 
 - `GET /api/reports` and `POST /api/reports`
 - `GET /api/reports/:id` and `DELETE /api/reports/:id`
 - `GET /api/research` and `POST /api/research`
 - `GET /api/research/:id`
 - `POST /api/research/:id/cancel`
+- `GET /api/auth/login` and `POST /api/auth/login` (workspace session authentication)
+- `POST /api/auth/recover` (4-digit PIN account recovery flow)
+- `GET /api/workspaces/:workspaceId/reports/:reportId` and `DELETE /api/workspaces/:workspaceId/reports/:reportId` (tenant-scoped report access)
+- `GET /api/workspaces/:workspaceId/members` and `PATCH /api/workspaces/:workspaceId/members` (workspace role management for `owner`, `admin`, `researcher`, and `viewer`)
+- `GET /api/workspaces/:workspaceId/invoices/:invoiceId` (workspace billing invoice lookup)
+- `POST /api/billing` (`redeem-promo`, `transfer-credits`, and `activate-plan` credit ledger operations)
 
 For optional browser screenshots, start the app and run
 `npm run capture:screenshots`. Generated artifacts and downloaded exports are

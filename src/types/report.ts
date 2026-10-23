@@ -99,6 +99,9 @@ export interface ResearchReport {
   schemaVersion: 1;
   id: string;
   origin: ReportOrigin;
+  workspaceId?: string;
+  ownerId?: string;
+  visibility?: "private" | "workspace";
   title: string;
   question: string;
   scope: string;
