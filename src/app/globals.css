@@ -8,6 +8,10 @@
   color-scheme: light;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -21,6 +25,10 @@ html {
   scroll-behavior: smooth;
 }
 
+:root[data-theme="dark"] html {
+  background: #1a1916;
+}
+
 body {
   min-height: 100vh;
   overflow-x: hidden;
@@ -29,6 +37,11 @@ body {
   font-family: var(--font-control);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme="dark"] body {
+  color: #e8e3da;
+  background: #1a1916;
 }
 
 button,
@@ -49,6 +62,11 @@ a {
 ::selection {
   color: #fffaf2;
   background: #7d351d;
+}
+
+:root[data-theme="dark"] ::selection {
+  color: #1a1916;
+  background: #f09872;
 }
 
 @media (prefers-reduced-motion: reduce) {

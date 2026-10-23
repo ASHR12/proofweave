@@ -17,6 +17,10 @@
   animation: fadeIn 180ms ease both;
 }
 
+:root[data-theme="dark"] .backdrop {
+  background: rgb(0 0 0 / 70%);
+}
+
 .drawer {
   position: relative;
   z-index: 1;
@@ -213,6 +217,12 @@
   border: 1px solid #d5aaa2;
 }
 
+:root[data-theme="dark"] .error {
+  color: #f0a69a;
+  background: #2e211f;
+  border-color: #4a3230;
+}
+
 .error svg {
   flex: 0 0 auto;
   margin-top: 1px;
@@ -264,6 +274,10 @@
   border: 1px solid var(--line);
   border-radius: 2px;
   cursor: pointer;
+}
+
+:root[data-theme="dark"] .valueGrid button {
+  background: rgb(28 26 23 / 56%);
 }
 
 .valueGrid button:hover {
@@ -332,9 +346,19 @@
   text-transform: uppercase;
 }
 
+:root[data-theme="dark"] .previewHeading > span {
+  color: #f0a69a;
+  background: #2e211f;
+}
+
 .previewHeading > span[data-valid="true"] {
   color: #385341;
   background: #dfe9df;
+}
+
+:root[data-theme="dark"] .previewHeading > span[data-valid="true"] {
+  color: #9db89c;
+  background: #243428;
 }
 
 .previewViewport {
@@ -361,6 +385,10 @@
   overflow-wrap: anywhere;
   tab-size: 2;
   white-space: pre-wrap;
+}
+
+:root[data-theme="dark"] .previewViewport pre {
+  color: #d0cbc2;
 }
 
 .previewEmpty {
@@ -390,6 +418,10 @@
   gap: 24px;
   background: #e9e1d5;
   border-top: 1px solid var(--line-dark);
+}
+
+:root[data-theme="dark"] .footer {
+  background: #1a1815;
 }
 
 .footer > p {
@@ -429,6 +461,10 @@
   color: #fffaf5;
   background: var(--copper-dark);
   border-color: var(--copper-dark);
+}
+
+:root[data-theme="dark"] .downloadButton {
+  color: #1a1916;
 }
 
 .copyButton:hover:not(:disabled) {
